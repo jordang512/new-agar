@@ -1,0 +1,295 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+</head>
+<body onmousemove="setMousePosition(event)">
+	<div style="display:block; margin-left:auto; margin-right:auto; width: 920px;">
+		<canvas id="mycanvas" width="600" height="600" style="float: left; border-radius: 5px"></canvas>
+    	<div style="width: 300px; height: 600px; background-color: #8A5FA1; float: right; border-radius: 5px">
+
+            <div id="button" style="width: 280px; height: 80px; margin-top: 10px;" onclick="increaseSpeed();">
+                <p style="margin-top: 0px; margin-bottom:0px; padding-top:4px">Speed Increase</p>
+                <p style="font-size: 15px; margin-top: 5px;">Cost: <span id="speedIncreaseCost">10</span></p>
+            </div>
+
+            <div id="nonClickedButton" style="width: 280px; height: 100px; border: 1px solid #283290">
+                <table>
+                	<tr>
+                		<td>
+                			<div id="button" style="height: 50px; width: 50px; margin-top: 6px; margin-left: 6px; padding: 15px;" onclick="setPlayerStyle('circle');">
+                				<div style="margin-left: auto; margin-right: auto; background-color: white; width: 50px; height: 50px; border-radius: 25px;"></div>
+                			</div>
+                		</td>
+                		<td>
+                			<div id="button" style="height: 50px; width: 50px; margin-top: 6px; margin-left: 6px; padding: 15px;" onclick="setPlayerStyle('square');">
+                				<div style="margin-left: auto; margin-right: auto; background-color: white; width: 50px; height: 50px;"></div>
+                			</div>
+                		</td>
+                		<td>
+                			<div id="button" style="height: 80px; width: 80px; margin-top: 6px; margin-left: 6px">
+                				
+                			</div>
+                		</td>
+                	</tr>
+                </table>
+            </div>
+
+            <div style="border-radius: 5px; border: 1px solid #283290; width: 280px; margin-left: auto; margin-right: auto; margin-top: 10px">
+            	<p style="margin-top: 0; margin-bottom: 0; padding-top:4px; font-size: 36px; font-family: cambria; color: white; text-align: center">Colors</p>
+            	<div id="even" style="display: table; width: 260px; margin-left: auto; margin-right: auto; margin-top: 5px;">
+	            	<div id="colorPalette" style="background-color: red;" onclick="setColor('red')"></div>
+	            	<div id="colorPalette" style="background-color: orange;" onclick="setColor('orange')"></div>
+	            	<div id="colorPalette" style="background-color: yellow;" onclick="setColor('yellow')"></div>
+	            	<div id="colorPalette" style="background-color: green;" onclick="setColor('green')"></div>
+	            	<div id="colorPalette" style="background-color: blue;" onclick="setColor('blue')"></div>
+	            </div>
+	            <div id="even" style="display: table; width: 260px; margin-left: auto; margin-right: auto; margin-bottom: 10px">
+	            	<div id="colorPalette" style="background-color: indigo;" onclick="setColor('indigo')"></div>
+	            	<div id="colorPalette" style="background-color: purple;" onclick="setColor('purple')"></div>
+	            	<div id="colorPalette" style="background-color: violet;" onclick="setColor('violet')"></div>
+	            	<div id="colorPalette" style="background-color: sienna;" onclick="setColor('sienna')"></div>
+	            	<div id="colorPalette" style="background-color: black;" onclick="setColor('black')"></div>
+	            </div>
+            </div>
+    	</div>
+    </div>
+    <p style="text-align: center; font-family: cambria; font-size: 20px; color: gray; margin-top: 15px">Press P to pause, and press I to increase speed.</p>
+	<script>
+		//Todo for Shop:
+		//Change shape
+		//Buy color/patterns
+		//
+	
+		// spawn rate is 1 for very little(harder), and 10 for most(easier)
+		var spawnrate = 5;
+		var numberOfAIs = 15;
+		var alive = true;
+		var fps = 60;
+		var MouseX = 0;
+		var MouseY = 0;
+		var pCount = 0;
+		var paused = true;
+		var speedIncCost = 10;
+		var speedMult = 1.00;
+
+		var player = {size:10, color:"red", speed:450, location:{x: 0, y: 0}, type: "player", style:"circle"};
+		var pellets = [];
+		var notifications = [];
+
+		var c = document.getElementById("mycanvas");
+		var ctx = c.getContext("2d");
+
+		function drawBackground() {
+			ctx.beginPath();
+			ctx.fillStyle = "#EAEAEA";
+			ctx.fillRect(0, 0, c.width, c.height);
+			ctx.closePath();
+		}
+
+		function setSpeed(user) {
+			// Speed is a logarithmic curve
+			user.speed = Math.log(1000/(user.size)) * 100 * speedMult;
+		}
+
+		function drawUser(user) {
+			ctx.beginPath();
+			ctx.fillStyle = user.color;
+			if (user.style == "circle") {
+				radius = Math.sqrt(user.size/Math.PI) * 10;
+				ctx.moveTo(user.location.x, user.location.y);
+				ctx.arc(user.location.x, user.location.y, radius, 0, Math.PI*2);
+				ctx.fill();
+				ctx.closePath();
+			} else if (user.style == "square") {
+				radius = Math.sqrt(user.size) * 10/2;
+				ctx.moveTo(user.location.x, user.location.y);
+				ctx.rect(user.location.x - radius, user.location.y - radius, radius*2, radius*2);
+				ctx.fill();
+				ctx.closePath();
+			}
+			if (user.type == "player") {
+				for (i in pellets) {
+					if (pellets[i].location.x < user.location.x + radius && pellets[i].location.x > user.location.x - radius) {
+						if (pellets[i].location.y < user.location.y + radius && pellets[i].location.y > user.location.y - radius) {
+							user.size += pellets[i].size;
+							pellets.splice(i, 1);
+							setSpeed(user);
+						}
+					}
+				}
+				//drawScore();
+			}
+		}
+
+		function moveUser() {
+			var distX = Math.abs(player.location.x - MouseX);
+			var distY = Math.abs(player.location.y - MouseY);
+			var dX = distX;
+			var dY = distY;
+			distX /= Math.sqrt((dX * dX) + (dY * dY));
+			distY /= Math.sqrt((dX * dX) + (dY * dY));
+			radius = Math.sqrt(player.size/Math.PI) * 10;
+			if(!(player.location.x > MouseX - 3 && player.location.x < MouseX + 3 && player.location.y > MouseY - 3 && player.location.y < MouseY + 3)) {
+				if(player.location.x > MouseX && player.location.x > 0) {
+					player.location.x -= player.speed/fps * distX;
+				} else if (player.location.x < MouseX && player.location.x < c.width) {
+					player.location.x += player.speed/fps * distX;
+				}
+				if(player.location.y > MouseY && player.location.y > 0) {
+					player.location.y -= player.speed/fps * distY;
+				} else if (player.location.y < MouseY && player.location.y < c.height) {
+					player.location.y += player.speed/fps * distY;
+				}
+			}
+		}
+
+		function setMousePosition(e) {
+			MouseX = e.clientX - ($(window).width()/2 - c.width/2)+160;
+			MouseY = e.clientY;
+		}
+
+		function makePellet() {
+			var pX = Math.floor(Math.random() * c.width);
+			var pY = Math.floor(Math.random() * c.height);
+			var pellet = {location:{x: pX, y: pY}, size:1, type: "pellet", color:randRGB(), style: "circle"};
+			pellets.push(pellet);
+		}
+
+		function randRGB() {
+			var r = Math.floor(Math.random()*255);
+			var g = Math.floor(Math.random()*255);
+			var b = Math.floor(Math.random()*255);
+			return "rgb("+r+","+g+","+b+")";
+		}
+
+		function makeGamePellets() {
+			for (i = 0; i < 20; i++) {
+				makePellet();
+			}
+		}
+
+		function makePellets() {
+			if (pCount == Math.floor(fps/2)){
+				pCount = 0;
+				makePellet();
+			} else {
+				pCount++;
+			}
+		}
+
+		function drawPellets() {
+			for(i in pellets) {
+				drawUser(pellets[i]);
+			}
+		}
+
+		function drawScore() {
+			ctx.beginPath();
+			ctx.fillStyle = "gray";
+			ctx.font = "22px Arial";
+			ctx.fillText("Score: " + player.size + ", Speed: " + Math.floor(player.speed), 20, c.height - 25);
+		}
+
+		function drawPauseSymbol() {
+			ctx.beginPath();
+			ctx.moveTo(c.width/2 - 30, c.height/2 - 40);
+			ctx.lineTo(c.width/2 + 30, c.height/2 - 40);
+			ctx.quadraticCurveTo(c.width/2 + 40, c.height/2 - 40, c.width/2 + 40, c.height/2 - 30);
+			ctx.lineTo(c.width/2 + 40, c.height/2 + 30);
+			ctx.quadraticCurveTo(c.width/2 + 40, c.height/2 + 40, c.width/2 + 30, c.height/2 + 40);
+			ctx.lineTo(c.width/2 - 30, c.height/2 + 40);
+			ctx.quadraticCurveTo(c.width/2 - 40, c.height/2 + 40, c.width/2 - 40, c.height/2 + 30);
+			ctx.lineTo(c.width/2 - 40, c.height/2 - 30);
+			ctx.quadraticCurveTo(c.width/2 - 40, c.height/2 - 40, c.width/2 - 30, c.height/2 - 40);
+			ctx.fillStyle = "gold";
+			ctx.fill();
+			ctx.fillStyle = "silver";
+			ctx.fillRect(c.width/2 - 27, c.height/2 - 30, 20, 60);
+			ctx.fillRect(c.width/2 + 7, c.height/2 - 30, 20, 60);
+			ctx.rect(c.width/2 - 27, c.height/2 - 30, 20, 60);
+			ctx.rect(c.width/2 + 7, c.height/2 - 30, 20, 60);
+			ctx.stroke();
+		}
+
+		function intervalFunctionCalls() {
+			drawBackground();
+			if(!paused) {
+				moveUser();
+				makePellets();
+			}
+			drawUser(player);
+			drawPellets();
+			notify();
+			drawScore();
+			if (paused) {
+				drawPauseSymbol();
+			}
+		}
+
+		function increaseSpeed() {
+			if (player.size > 10 + speedIncCost) {
+				speedMult += 0.05;
+				player.size -= Math.floor(speedIncCost);
+				speedIncCost *= 1.2;
+				document.getElementById('speedIncreaseCost').innerHTML = Math.ceil(speedIncCost);
+				setSpeed(player);
+			} else {
+				addNotification("You need to have at least 10 mass left after the purchase!", fps*5, 20, 25);
+			}
+		}
+
+		function notify() {
+			ctx.beginPath();
+			for (i in notifications) {
+				ctx.fillStyle = "gray";
+				ctx.font = "15px Arial";
+				ctx.fillText(notifications[i].message, notifications[i].location.x, notifications[i].location.y);
+				notifications[i].ticks--;
+				if (notifications[i].ticks == 0) {
+					notifications.splice(i, 1);
+				}
+			}
+		}
+
+		function setPlayerStyle(style) {
+			player.style = style;
+		}
+
+		function setColor(color) {
+			player.color = color;
+		}
+
+		function addNotification(message, ticks, x, y) {
+			notification = {message: message, ticks: ticks, location:{x: x, y: y}};
+			notifications.push(notification);
+		}
+
+		document.addEventListener('keydown', function(event) {
+    		if(event.keyCode == 80) {
+        		if(paused) {
+        			paused = false;
+        		} else {
+        			paused = true;
+        		}
+    		}
+
+    		if(event.keyCode == 73) {
+    			increaseSpeed();
+    		}
+
+    		if(event.keyCode == 49) {
+    			setPlayerStyle('circle');
+    		}
+
+    		if(event.keyCode == 50) {
+    			setPlayerStyle('square');
+    		}
+		});
+
+		makeGamePellets();
+		setInterval(function() {intervalFunctionCalls();}, 1000/fps);
+	</script>
+</body>
+</html>
