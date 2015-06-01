@@ -73,33 +73,29 @@
 		var paused = true;
 		var speedIncCost = 10;
 		var speedMult = 1.00;
-
-		var player = {size:10, color:"red", speed:450, location:{x: 0, y: 0}, type: "player", style:"circle"};
+		
 		var pellets = [];
 		var notifications = [];
-
 		var c = document.getElementById("mycanvas");
 		var ctx = c.getContext("2d");
-
+		var player = {size:10, color:"red", speed:450, location:{x: c.width/2, y: c.height/2}, type: "player", style:"circle"};
 		function drawBackground() {
 			ctx.beginPath();
 			ctx.fillStyle = "#EAEAEA";
 			ctx.fillRect(0, 0, c.width, c.height);
 			ctx.closePath();
 		}
-
 		function setSpeed(user) {
 			// Speed is a logarithmic curve
-			user.speed = Math.log(1000/(user.size)) * 100 * speedMult;
+			user.speed = Math.pow(Math.sqrt(player.size+190),-1)*4000*speedMult;
 		}
-
 		function drawUser(user) {
 			ctx.beginPath();
 			ctx.fillStyle = user.color;
 			if (user.style == "circle") {
 				radius = Math.sqrt(user.size/Math.PI) * 10;
-				ctx.moveTo(user.location.x, user.location.y);
-				ctx.arc(user.location.x, user.location.y, radius, 0, Math.PI*2);
+				ctx.moveTo(user.location.x-player.location.x+c.width/2, user.location.y-player.location.y+c.height/2);
+				ctx.arc(user.location.x-player.location.x+c.width/2, user.location.y-player.location.y+c.height/2, radius, 0, Math.PI*2);
 				ctx.fill();
 				ctx.closePath();
 			} else if (user.style == "square") {
@@ -113,16 +109,21 @@
 				for (i in pellets) {
 					if (pellets[i].location.x < user.location.x + radius && pellets[i].location.x > user.location.x - radius) {
 						if (pellets[i].location.y < user.location.y + radius && pellets[i].location.y > user.location.y - radius) {
-							user.size += pellets[i].size;
-							pellets.splice(i, 1);
-							setSpeed(user);
+							if (user.style == "square") {
+								user.size += pellets[i].size;
+								pellets.splice(i, 1);
+								setSpeed(user);
+							} else if (user.style == "circle") {
+								if (Math.sqrt((pellets[i].location.y-user.location.y)*(pellets[i].location.y-user.location.y)+(pellets[i].location.x-user.location.x)*(pellets[i].location.x-user.location.x))<radius) {user.size += pellets[i].size;
+								pellets.splice(i, 1);
+								setSpeed(user);}
+							}
 						}
 					}
 				}
 				//drawScore();
 			}
 		}
-
 		function moveUser() {
 			var distX = Math.abs(player.location.x - MouseX);
 			var distY = Math.abs(player.location.y - MouseY);
@@ -131,7 +132,7 @@
 			distX /= Math.sqrt((dX * dX) + (dY * dY));
 			distY /= Math.sqrt((dX * dX) + (dY * dY));
 			radius = Math.sqrt(player.size/Math.PI) * 10;
-			if(!(player.location.x > MouseX - 3 && player.location.x < MouseX + 3 && player.location.y > MouseY - 3 && player.location.y < MouseY + 3)) {
+			if(!(player.location.x > MouseX - 5 && player.location.x < MouseX + 5 && player.location.y > MouseY - 5 && player.location.y < MouseY + 5)) {
 				if(player.location.x > MouseX && player.location.x > 0) {
 					player.location.x -= player.speed/fps * distX;
 				} else if (player.location.x < MouseX && player.location.x < c.width) {
@@ -144,54 +145,46 @@
 				}
 			}
 		}
-
 		function setMousePosition(e) {
 			MouseX = e.clientX - ($(window).width()/2 - c.width/2)+160;
 			MouseY = e.clientY;
 		}
-
 		function makePellet() {
-			var pX = Math.floor(Math.random() * c.width);
-			var pY = Math.floor(Math.random() * c.height);
+			var pX = Math.floor((Math.random()-.5) * c.width*5);
+			var pY = Math.floor((Math.random()-.5) * c.height*5);
 			var pellet = {location:{x: pX, y: pY}, size:1, type: "pellet", color:randRGB(), style: "circle"};
 			pellets.push(pellet);
 		}
-
 		function randRGB() {
 			var r = Math.floor(Math.random()*255);
 			var g = Math.floor(Math.random()*255);
 			var b = Math.floor(Math.random()*255);
 			return "rgb("+r+","+g+","+b+")";
 		}
-
 		function makeGamePellets() {
 			for (i = 0; i < 20; i++) {
 				makePellet();
 			}
 		}
-
 		function makePellets() {
-			if (pCount == Math.floor(fps/2)){
+			if (pCount == Math.floor(0)){
 				pCount = 0;
 				makePellet();
 			} else {
 				pCount++;
 			}
 		}
-
 		function drawPellets() {
 			for(i in pellets) {
 				drawUser(pellets[i]);
 			}
 		}
-
 		function drawScore() {
 			ctx.beginPath();
 			ctx.fillStyle = "gray";
 			ctx.font = "22px Arial";
 			ctx.fillText("Score: " + player.size + ", Speed: " + Math.floor(player.speed), 20, c.height - 25);
 		}
-
 		function drawPauseSymbol() {
 			ctx.beginPath();
 			ctx.moveTo(c.width/2 - 30, c.height/2 - 40);
@@ -212,7 +205,6 @@
 			ctx.rect(c.width/2 + 7, c.height/2 - 30, 20, 60);
 			ctx.stroke();
 		}
-
 		function intervalFunctionCalls() {
 			drawBackground();
 			if(!paused) {
@@ -227,7 +219,6 @@
 				drawPauseSymbol();
 			}
 		}
-
 		function increaseSpeed() {
 			if (player.size > 10 + speedIncCost) {
 				speedMult += 0.05;
@@ -239,7 +230,6 @@
 				addNotification("You need to have at least 10 mass left after the purchase!", fps*5, 20, 25);
 			}
 		}
-
 		function notify() {
 			ctx.beginPath();
 			for (i in notifications) {
@@ -252,20 +242,16 @@
 				}
 			}
 		}
-
 		function setPlayerStyle(style) {
 			player.style = style;
 		}
-
 		function setColor(color) {
 			player.color = color;
 		}
-
 		function addNotification(message, ticks, x, y) {
 			notification = {message: message, ticks: ticks, location:{x: x, y: y}};
 			notifications.push(notification);
 		}
-
 		document.addEventListener('keydown', function(event) {
     		if(event.keyCode == 80) {
         		if(paused) {
@@ -274,20 +260,17 @@
         			paused = true;
         		}
     		}
-
     		if(event.keyCode == 73) {
     			increaseSpeed();
     		}
-
     		if(event.keyCode == 49) {
     			setPlayerStyle('circle');
     		}
-
     		if(event.keyCode == 50) {
     			setPlayerStyle('square');
     		}
 		});
-
+		setSpeed(player);
 		makeGamePellets();
 		setInterval(function() {intervalFunctionCalls();}, 1000/fps);
 	</script>
