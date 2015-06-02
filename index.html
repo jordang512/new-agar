@@ -73,7 +73,7 @@
 		var paused = true;
 		var speedIncCost = 10;
 		var speedMult = 1.00;
-		var size = {height: 4000, width: 4000};
+		var size = {height: 10000, width: 10000};
 		var pellets = [];
 		var notifications = [];
 		var c = document.getElementById("mycanvas");
@@ -132,7 +132,7 @@
 			distX /= Math.sqrt((dX * dX) + (dY * dY));
 			distY /= Math.sqrt((dX * dX) + (dY * dY));
 			radius = Math.sqrt(player.size/Math.PI) * 10;
-			if(!(MouseX > c.width/2 - 5 && MouseX < c.width/2 + 5 && MouseY > c.height/2 - 5 && MouseY < c.height/2 + 5)) {
+			if(!(MouseX > c.width/2 - 10 && MouseX < c.width/2 + 10 && MouseY > c.height/2 && MouseY < c.height/2 + 20)) {
 				if (player.location.x > 0 && MouseX < c.width/2) {
 					player.location.x -= player.speed/fps * distX;
 				} else if (player.location.x < size.height && MouseX > c.width/2) {
@@ -162,21 +162,27 @@
 			return "rgb("+r+","+g+","+b+")";
 		}
 		function makeGamePellets() {
-			for (i = 0; i < 20; i++) {
+			for (i = 0; i < 500; i++) {
 				makePellet();
 			}
 		}
 		function makePellets() {
-			if (pCount == Math.floor(0)){
-				pCount = 0;
-				makePellet();
-			} else {
-				pCount++;
+			if (pellets.length < 3000) {
+				if (pCount == Math.floor(0)){
+					pCount = 0;
+					makePellet();
+				} else {
+					pCount++;
+				}
 			}
 		}
 		function drawPellets() {
 			for(i in pellets) {
-				drawUser(pellets[i]);
+				if (!(pellets[i].location.x > player.location.x + c.height/2 && pellets[i].location.x < player.location.x - c.height/2)) {
+					if (!(pellets[i].location.y > player.location.y + c.width/2 && pellets[i].location.y < player.location.y - c.width/2)) {
+						drawUser(pellets[i]);
+					}
+				}
 			}
 		}
 		function drawScore() {
