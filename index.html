@@ -73,12 +73,12 @@
 		var paused = true;
 		var speedIncCost = 10;
 		var speedMult = 1.00;
-		var size = {height: 10000, width: 10000};
+		var size = {height: 4000, width: 4000};
 		var pellets = [];
 		var notifications = [];
 		var c = document.getElementById("mycanvas");
 		var ctx = c.getContext("2d");
-		var player = {size:10, color:"red", speed:450, location:{x: c.width/2, y: c.height/2}, type: "player", style:"circle"};
+		var player = {size:10, color:"red", speed:450, location:{x: size.width/2, y: size.height/2}, type: "player", style:"circle"};
 		function drawBackground() {
 			ctx.beginPath();
 			ctx.fillStyle = "#EAEAEA";
@@ -132,6 +132,12 @@
 			distX /= Math.sqrt((dX * dX) + (dY * dY));
 			distY /= Math.sqrt((dX * dX) + (dY * dY));
 			radius = Math.sqrt(player.size/Math.PI) * 10;
+			if (MouseX > c.width/2 - 120 && MouseX < c.width/2 + 120) {
+				distX /= 120/ Math.abs(MouseX - c.width/2);
+			}
+			if (MouseY > c.height/2 - 120 && MouseY < c.height/2 + 120) {
+				distY /= 120/ Math.abs(MouseY - c.height/2);
+			}
 			if(!(MouseX > c.width/2 - 10 && MouseX < c.width/2 + 10 && MouseY > c.height/2 && MouseY < c.height/2 + 20)) {
 				if (player.location.x > 0 && MouseX < c.width/2) {
 					player.location.x -= player.speed/fps * distX;
@@ -167,7 +173,7 @@
 			}
 		}
 		function makePellets() {
-			if (pellets.length < 3000) {
+			if (pellets.length < 2000) {
 				if (pCount == Math.floor(0)){
 					pCount = 0;
 					makePellet();
@@ -281,4 +287,3 @@
 		setInterval(function() {intervalFunctionCalls();}, 1000/fps);
 	</script>
 </body>
-</html>
