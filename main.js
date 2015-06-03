@@ -183,17 +183,28 @@ function drawPauseSymbol() {
 
 // The function calls that happen every frame
 function intervalFunctionCalls() {
-	drawBackground();
-	if(!paused) {
-		moveUser();
-		makePellets();
+	if (!isUserDead(player)) {
+		drawBackground();
+		if(!paused) {
+			moveUser();
+			makePellets();
+		}
+		drawUser(player);
+		drawPellets();
+		notify();
+		drawScore();
+		if (paused) {
+			drawPauseSymbol();
+		}
 	}
-	drawUser(player);
-	drawPellets();
-	notify();
-	drawScore();
-	if (paused) {
-		drawPauseSymbol();
+}
+
+// Checks if the player is dead
+function isUserDead(user) {
+	if (user.size < 1) {
+		return true;
+	} else {
+		return false;
 	}
 }
 
