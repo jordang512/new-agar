@@ -11,9 +11,11 @@ var speedMult = 1.00;
 var size = {height: 4000, width: 4000};
 var pellets = [];
 var notifications = [];
+var AIs = [];
 var c = document.getElementById("mycanvas");
 var ctx = c.getContext("2d");
 var player = {size:10, color:"red", speed:450, location:{x: size.width/2, y: size.height/2}, type: "player", style:"circle"};
+
 function drawBackground() {
 	ctx.beginPath();
 	ctx.fillStyle = "#EAEAEA";
@@ -43,7 +45,7 @@ function drawUser(user) {
 		ctx.fill();
 		ctx.closePath();
 	}
-	if (user.type == "player") {
+	if (user.type == "player" || user.type == "AI") {
 		for (i in pellets) {
 			if (pellets[i].location.x < user.location.x + radius && pellets[i].location.x > user.location.x - radius) {
 				if (pellets[i].location.y < user.location.y + radius && pellets[i].location.y > user.location.y - radius) {
@@ -61,11 +63,30 @@ function drawUser(user) {
 				}
 			}
 		}
+		for (i in AIs) {
+			if (user.size >= AIs[i].size*1.414) {
+				if (AIs[i].location.x < user.location.x + radius && AIs[i].location.x > user.location.x - radius) {
+					if (AIs[i].location.y < user.location.y + radius && AIs[i].location.y > user.location.y - radius) {
+						if (user.style == "square") {
+							user.size += AIs[i].size;
+							AIs.splice(i, 1);
+							setSpeed(user);
+						} else if (user.style == "circle") {
+							if (Math.sqrt((AIs[i].location.y-user.location.y)*(AIs[i].location.y-user.location.y)+(AIs[i].location.x-user.location.x)*(AIs[i].location.x-user.location.x)) < radius) {
+								user.size += AIs[i].size;
+								AIs.splice(i, 1);
+								setSpeed(user);
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 }
 
 // Moves the player based on the mouse coords
-function moveUser() {
+function movePlayer() {
 	// Calculates the distance between the player and mouse
 	var distX = Math.abs(c.width/2 - MouseX);
 	var distY = Math.abs(c.height/2 - MouseY);
@@ -94,6 +115,35 @@ function moveUser() {
 		} else if (player.location.y < size.width && MouseY > c.width/2) {
 			player.location.y += player.speed/fps * distY;
 		}
+	}
+}
+
+// Moves the AI based on its direction
+function moveAI(AI) {
+	// Calculates the distance between the player and mouse
+	var distX = Math.abs(c.width/2 - AI.target.x);
+	var distY = Math.abs(c.height/2 - AI.target.y);
+	var dX = distX;
+	var dY = distY;
+	distX /= Math.sqrt((dX * dX) + (dY * dY));
+	distY /= Math.sqrt((dX * dX) + (dY * dY));
+	radius = Math.sqrt(AI.size/Math.PI) * 10;
+	// Moves AI towards target
+	if (AI.location.x > 0 && AI.target.x < c.width/2) {
+		AI.location.x -= AI.speed/fps * distX;
+	} else if (AI.location.x < size.height && AI.target.x > c.width/2) {
+		AI.location.x += AI.speed/fps * distX;
+	}
+	if (AI.location.y > 0 && AI.target.y < c.width/2) {
+		AI.location.y -= AI.speed/fps * distY;
+	} else if (AI.location.y < size.width && AI.target.y > c.width/2) {
+		AI.location.y += AI.speed/fps * distY;
+	}
+}
+
+function moveAIs() {
+	for (i in AIs) {
+		moveAI(AIs[i]);
 	}
 }
 
@@ -126,7 +176,7 @@ function makeGamePellets() {
 	}
 }
 
-var maxPellets = 2000;
+var maxPellets = 500;
 // Makes a pellet every frame, maxing out at 2000
 function makePellets() {
 	if (pellets.length < maxPellets) {
@@ -142,6 +192,7 @@ function makePellets() {
 // Draws all the pellets around the player
 function drawPellets() {
 	for(i in pellets) {
+		// Only draws pellets within the canvas
 		if (!(pellets[i].location.x > player.location.x + c.height/2 && pellets[i].location.x < player.location.x - c.height/2)) {
 			if (!(pellets[i].location.y > player.location.y + c.width/2 && pellets[i].location.y < player.location.y - c.width/2)) {
 				drawUser(pellets[i]);
@@ -181,24 +232,6 @@ function drawPauseSymbol() {
 	ctx.stroke();
 }
 
-// The function calls that happen every frame
-function intervalFunctionCalls() {
-	if (!isUserDead(player)) {
-		drawBackground();
-		if(!paused) {
-			moveUser();
-			makePellets();
-		}
-		drawUser(player);
-		drawPellets();
-		notify();
-		drawScore();
-		if (paused) {
-			drawPauseSymbol();
-		}
-	}
-}
-
 // Checks if the player is dead
 function isUserDead(user) {
 	if (user.size < 1) {
@@ -213,7 +246,7 @@ function increaseSpeed() {
 	if (player.size > 10 + speedIncCost) {
 		speedMult += 0.05;
 		player.size -= Math.floor(speedIncCost);
-		speedIncCost *= 1.2;
+		speedIncCost = Math.pow(speedIncCost, 1.1);
 		document.getElementById('speedIncreaseCost').innerHTML = Math.ceil(speedIncCost);
 		setSpeed(player);
 	} else {
@@ -275,6 +308,105 @@ document.addEventListener('keydown', function(event) {
 	}
 });
 
+// Finds what direction an AI should go
+function AItarget(AI) {
+	var greatest = 0.0;
+	var greatestX = 0;
+	var greatestY = 0;
+	for (i in pellets) {
+		if (1/Math.sqrt(pellets[i].location.x*pellets[i].location.x+pellets[i].location.y*pellets[i].location.y) > greatest/Math.sqrt(greatestX*greatestX+greatestY*greatestY)) {
+			greatest = 1;
+			greatestX = pellets[i].location.x;
+			greatestY = pellets[i].location.y;
+		}
+	}
+	for (i in AIs) {
+		if (AIs[i].size/Math.sqrt(AIs[i].location.x*AIs[i].location.x+AIs[i].location.y*AIs[i].location.y) > greatest/Math.sqrt(greatestX*greatestX+greatestY*greatestY)) {
+			if (AIs[i].size<AI.size/1.41) {
+				greatest = AIs[i].size;
+				greatestX = AIs[i].location.x;
+				greatestY = AIs[i].location.y;
+			} else if (AIs[i].size>AI.size*1.41) {
+				greatestX = 2*AI.location.x-AIs[i].location.x;
+				greatestY = 2*AI.location.y-AIs[i].location.y;
+			}
+		}
+	}
+	if (player.size/Math.sqrt(player.location.x*player.location.x+player.location.y*player.location.y) > greatest/Math.sqrt(greatestX*greatestX+greatestY*greatestY)) {
+		if (player.size<AI.size/1.41) {
+			greatest = player.size;
+			greatestX = player.location.x;
+			greatestY = player.location.y;
+		} else if (player.size>AI.size*1.41) {
+			greatestX = 2*AI.location.x-player.location.x;
+			greatestY = 2*AI.location.y-player.location.y;
+		}
+	}
+	AI.target.x = greatestX;
+	AI.target.y = greatestY;
+}
+
+// Spawns an AI
+function spawnAI() {
+	var pX = Math.floor((Math.random()) * size.width);
+	var pY = Math.floor((Math.random()) * size.height);
+	var AI = {location:{x: pX, y: pY}, size:10, type: "AI", color:randRGB(), style: "circle", speed:50, target:{x:0, y:0}};
+	AIs.push(AI);
+}
+
+// Spawns starting AIs
+function spawnAIs() {
+	for (i = 0; i < 20; i++) {
+		spawnAI();
+	}
+}
+
+// Draws AIs
+function drawAIs() {
+	for (i in AIs) {
+		drawUser(AIs[i]);
+	}
+}
+
+function findAllTargets() {
+	for (i in AIs) {
+		findTarget(AIs[i]);
+	}
+}
+
+int targetNum = 0;
+function findTargets() {
+	findTarget(AIs[targetNum]);
+	if (targetnum < AIs.length - 1) {
+		targetnum++;
+	} else {
+		targetnum = 0;
+	}
+}
+
+// The function calls that happen every frame
+function intervalFunctionCalls() {
+	if (!isUserDead(player)) {
+		drawBackground();
+		if(!paused) {
+			movePlayer();
+			makePellets();
+			moveAIs();
+		}
+		drawPellets();
+		findTargets();
+		drawAIs();
+		drawUser(player);
+		notify();
+		drawScore();
+		if (paused) {
+			drawPauseSymbol();
+		}
+	}
+}
+
 setSpeed(player);
 makeGamePellets();
+spawnAIs();
+findAllTargets();
 setInterval(function() {intervalFunctionCalls();}, 1000/fps);
