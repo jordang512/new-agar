@@ -8,7 +8,7 @@ var pCount = 0;
 var paused = true;
 var speedIncCost = 10;
 var speedMult = 1.00;
-var size = {height: 1000, width: 1000};
+var size = {height: 2500, width: 2500};
 var pellets = [];
 var notifications = [];
 var AIs = [];
@@ -20,7 +20,8 @@ var player = {
     speed: 450,
     location: {x: size.width / 2, y: size.height / 2},
     type: 'player',
-    style: 'circle'
+    style: 'circle',
+    speedMult: 1
 };
 
 function drawBackground() {
@@ -32,7 +33,7 @@ function drawBackground() {
 
 // Sets the speed of given user
 function setSpeed(user) {
-    user.speed = Math.pow(Math.sqrt(player.size + 190), -1) * 4000 * speedMult;
+    user.speed = Math.pow(Math.sqrt(player.size + 190), -1) * 4000 * user.speedMult;
 }
 
 // Draws given user on the canvas
@@ -312,9 +313,9 @@ function isUserDead(user) {
 // Only increases if they have 10 more mass than the cost
 function increaseSpeed() {
     if (player.size > 10 + speedIncCost) {
-        speedMult += 0.05;
+        player.speedMult *= 1.05;
         player.size -= Math.floor(speedIncCost);
-        speedIncCost = Math.pow(speedIncCost, 1.05);
+        speedIncCost *= 1.1
         document.getElementById('speedIncreaseCost').innerHTML =
             Math.ceil(speedIncCost);
         setSpeed(player);
@@ -440,7 +441,8 @@ function spawnAI() {
         color: randRGB(),
         style: 'circle',
         speed: 50,
-        target: {x: 0, y: 0}
+        target: {x: 0, y: 0},
+        speedMult: 1
     };
     AIs.push(AI);
 }
