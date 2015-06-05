@@ -14,7 +14,7 @@ var notifications = [];
 var AIs = [];
 var c = document.getElementById('mycanvas');
 var ctx = c.getContext('2d');
-var player = {size: 10, color: 'red', speed: 450, location: {x: size.width/2, y: size.height/2}, type: 'player', style: 'circle'};
+var player = {size: 10, color: 'red', speed: 450, location: {x: size.width / 2, y: size.height / 2}, type: 'player', style: 'circle'};
 
 function drawBackground() {
     ctx.beginPath();
@@ -33,15 +33,15 @@ function drawUser(user) {
     ctx.beginPath();
     ctx.fillStyle = user.color;
     if (user.style == 'circle') {
-        radius = Math.sqrt(user.size/Math.PI) * 10;
-        ctx.moveTo(user.location.x - player.location.x + c.width/2, user.location.y - player.location.y + c.height/2);
-        ctx.arc(user.location.x - player.location.x + c.width/2, user.location.y - player.location.y + c.height/2, radius, 0, Math.PI * 2);
+        radius = Math.sqrt(user.size / Math.PI) * 10;
+        ctx.moveTo(user.location.x - player.location.x + c.width / 2, user.location.y - player.location.y + c.height / 2);
+        ctx.arc(user.location.x - player.location.x + c.width / 2, user.location.y - player.location.y + c.height / 2, radius, 0, Math.PI * 2);
         ctx.fill();
         ctx.closePath();
     } else if (user.style == 'square') {
         radius = Math.sqrt(user.size) * 10/2;
-        ctx.moveTo(user.location.x-player.location.x+c.width/2-radius, user.location.y-player.location.y+c.height/2-radius);
-        ctx.rect(user.location.x-player.location.x+c.width/2-radius, user.location.y-player.location.y+c.height/2-radius, radius*2,radius*2);
+        ctx.moveTo(user.location.x - player.location.x + c.width / 2 - radius, user.location.y - player.location.y + c.height / 2 - radius);
+        ctx.rect(user.location.x - player.location.x + c.width / 2 - radius, user.location.y - player.location.y + c.height / 2 - radius, radius * 2,radius * 2);
         ctx.fill();
         ctx.closePath();
     }
@@ -54,7 +54,10 @@ function drawUser(user) {
                         pellets.splice(i, 1);
                         setSpeed(user);
                     } else if (user.style == 'circle') {
-                        if (Math.sqrt((pellets[i].location.y-user.location.y)*(pellets[i].location.y-user.location.y)+(pellets[i].location.x-user.location.x)*(pellets[i].location.x-user.location.x))<radius) {
+                        if (Math.sqrt((pellets[i].location.y - user.location.y) * 
+                            (pellets[i].location.y - user.location.y) + 
+                            (pellets[i].location.x - user.location.x) * 
+                            (pellets[i].location.x - user.location.x)) < radius) {
                             user.size += pellets[i].size;
                             pellets.splice(i, 1);
                             setSpeed(user);
@@ -72,7 +75,10 @@ function drawUser(user) {
                             AIs.splice(i, 1);
                             setSpeed(user);
                         } else if (user.style == 'circle') {
-                            if (Math.sqrt((AIs[i].location.y-user.location.y)*(AIs[i].location.y-user.location.y)+(AIs[i].location.x-user.location.x)*(AIs[i].location.x-user.location.x)) < radius) {
+                            if (Math.sqrt((AIs[i].location.y - user.location.y) * 
+                                (AIs[i].location.y - user.location.y) + 
+                                (AIs[i].location.x - user.location.x) * 
+                                (AIs[i].location.x - user.location.x)) < radius) {
                                 user.size += AIs[i].size;
                                 AIs.splice(i, 1);
                                 setSpeed(user);
@@ -88,31 +94,31 @@ function drawUser(user) {
 // Moves the player based on the mouse coords
 function movePlayer() {
     // Calculates the distance between the player and mouse
-    var distX = Math.abs(c.width/2 - MouseX);
-    var distY = Math.abs(c.height/2 - MouseY);
+    var distX = Math.abs(c.width / 2 - MouseX);
+    var distY = Math.abs(c.height / 2 - MouseY);
     var dX = distX;
     var dY = distY;
     distX /= Math.sqrt((dX * dX) + (dY * dY));
     distY /= Math.sqrt((dX * dX) + (dY * dY));
     radius = Math.sqrt(player.size/Math.PI) * 10;
     // Gets slower as the mouse gets closer
-    if (MouseX > c.width/2 - 120 && MouseX < c.width/2 + 120) {
-        distX /= 120/ Math.abs(MouseX - c.width/2);
+    if (MouseX > c.width / 2 - 120 && MouseX < c.width / 2 + 120) {
+        distX /= 120/ Math.abs(MouseX - c.width / 2);
     }
-    if (MouseY > c.height/2 - 120 && MouseY < c.height/2 + 120) {
-        distY /= 120/ Math.abs(MouseY - c.height/2);
+    if (MouseY > c.height / 2 - 120 && MouseY < c.height / 2 + 120) {
+        distY /= 120/ Math.abs(MouseY - c.height / 2);
     }
     // Stops moving if mouse is within 10px of the center of the player
     // Moves player towards mouse
-    if(!(MouseX > c.width/2 - 10 && MouseX < c.width/2 + 10 && MouseY > c.height/2 && MouseY < c.height/2 + 20)) {
-        if (player.location.x > 0 && MouseX < c.width/2) {
+    if(!(MouseX > c.width / 2 - 10 && MouseX < c.width / 2 + 10 && MouseY > c.height / 2 && MouseY < c.height / 2 + 20)) {
+        if (player.location.x > 0 && MouseX < c.width / 2) {
             player.location.x -= player.speed/fps * distX;
-        } else if (player.location.x < size.height && MouseX > c.width/2) {
+        } else if (player.location.x < size.height && MouseX > c.width / 2) {
             player.location.x += player.speed/fps * distX;
         }
-        if (player.location.y > 0 && MouseY < c.width/2) {
+        if (player.location.y > 0 && MouseY < c.width / 2) {
             player.location.y -= player.speed/fps * distY;
-        } else if (player.location.y < size.width && MouseY > c.width/2) {
+        } else if (player.location.y < size.width && MouseY > c.width / 2) {
             player.location.y += player.speed/fps * distY;
         }
     }
@@ -121,22 +127,22 @@ function movePlayer() {
 // Moves the AI based on its direction
 function moveAI(AI) {
     // Calculates the distance between the player and mouse
-    var distX = Math.abs(c.width/2 - AI.target.x);
-    var distY = Math.abs(c.height/2 - AI.target.y);
+    var distX = Math.abs(c.width / 2 - AI.target.x);
+    var distY = Math.abs(c.height / 2 - AI.target.y);
     var dX = distX;
     var dY = distY;
     distX /= Math.sqrt((dX * dX) + (dY * dY));
     distY /= Math.sqrt((dX * dX) + (dY * dY));
     radius = Math.sqrt(AI.size/Math.PI) * 10;
     // Moves AI towards target
-    if (AI.location.x > 0 && AI.target.x < c.width/2) {
+    if (AI.location.x > 0 && AI.target.x < c.width / 2) {
         AI.location.x -= AI.speed/fps * distX;
-    } else if (AI.location.x < size.height && AI.target.x > c.width/2) {
+    } else if (AI.location.x < size.height && AI.target.x > c.width / 2) {
         AI.location.x += AI.speed/fps * distX;
     }
-    if (AI.location.y > 0 && AI.target.y < c.width/2) {
+    if (AI.location.y > 0 && AI.target.y < c.width / 2) {
         AI.location.y -= AI.speed/fps * distY;
-    } else if (AI.location.y < size.width && AI.target.y > c.width/2) {
+    } else if (AI.location.y < size.width && AI.target.y > c.width / 2) {
         AI.location.y += AI.speed/fps * distY;
     }
 }
@@ -149,7 +155,7 @@ function moveAIs() {
 
 // Uses JQuery and html to find mouse coords
 function setMousePosition(e) {
-    MouseX = e.clientX - ($(window).width()/2 - c.width/2)+160;
+    MouseX = e.clientX - ($(window).width()/2 - c.width / 2)+160;
     MouseY = e.clientY;
 }
 
@@ -193,8 +199,8 @@ function makePellets() {
 function drawPellets() {
     for(i in pellets) {
         // Only draws pellets within the canvas
-        if (!(pellets[i].location.x > player.location.x + c.height/2 && pellets[i].location.x < player.location.x - c.height/2)) {
-            if (!(pellets[i].location.y > player.location.y + c.width/2 && pellets[i].location.y < player.location.y - c.width/2)) {
+        if (!(pellets[i].location.x > player.location.x + c.height / 2 && pellets[i].location.x < player.location.x - c.height / 2)) {
+            if (!(pellets[i].location.y > player.location.y + c.width / 2 && pellets[i].location.y < player.location.y - c.width / 2)) {
                 drawUser(pellets[i]);
             }
         }
@@ -286,60 +292,67 @@ function notify() {
 
 // Listens for keypresses
 document.addEventListener('keydown', function(event) {
-// p
-if(event.keyCode == 80) {
-    if(paused) {
-        paused = false;
-    } else {
-        paused = true;
+    // p
+    if(event.keyCode == 80) {
+        if(paused) {
+            paused = false;
+        } else {
+            paused = true;
+        }
     }
-}
-// i
-if(event.keyCode == 73) {
-    increaseSpeed();
-}
-// 1
-if(event.keyCode == 49) {
-    setPlayerStyle('circle');
-}
-// 2
-if(event.keyCode == 50) {
-    setPlayerStyle('square');
-}
+    // i
+    if(event.keyCode == 73) {
+        increaseSpeed();
+    }
+    // 1
+    if(event.keyCode == 49) {
+        setPlayerStyle('circle');
+    }
+    // 2
+    if(event.keyCode == 50) {
+        setPlayerStyle('square');
+    }
 });
 
 // Finds what direction an AI should go
-function AItarget(AI) {
+function findTarget(AI) {
     var greatest = 0.0;
     var greatestX = 0;
     var greatestY = 0;
     for (i in pellets) {
-        if (1/Math.sqrt(pellets[i].location.x*pellets[i].location.x+pellets[i].location.y*pellets[i].location.y) > greatest/Math.sqrt(greatestX*greatestX+greatestY*greatestY)) {
+        if (1/Math.sqrt(pellets[i].location.x * 
+            pellets[i].location.x + pellets[i].location.y * 
+            pellets[i].location.y) > greatest/Math.sqrt(greatestX * greatestX + greatestY * greatestY)) {
             greatest = 1;
             greatestX = pellets[i].location.x;
             greatestY = pellets[i].location.y;
         }
     }
     for (i in AIs) {
-        if (AIs[i].size/Math.sqrt(AIs[i].location.x*AIs[i].location.x+AIs[i].location.y*AIs[i].location.y) > greatest/Math.sqrt(greatestX*greatestX+greatestY*greatestY)) {
-            if (AIs[i].size<AI.size/1.41) {
+        if (AIs[i].size / Math.sqrt(AIs[i].location.x * AIs[i].location.x + 
+            AIs[i].location.y * AIs[i].location.y) > 
+            greatest/Math.sqrt(greatestX * greatestX + greatestY * greatestY)) {
+            if (AIs[i].size < AI.size / 1.41) {
                 greatest = AIs[i].size;
                 greatestX = AIs[i].location.x;
                 greatestY = AIs[i].location.y;
-            } else if (AIs[i].size>AI.size*1.41) {
-                greatestX = 2*AI.location.x-AIs[i].location.x;
-                greatestY = 2*AI.location.y-AIs[i].location.y;
+            } else if (AIs[i].size > AI.size * 1.41) {
+                greatestX = 2 * AI.location.x - AIs[i].location.x;
+                greatestY = 2 * AI.location.y - AIs[i].location.y;
             }
         }
     }
-    if (player.size/Math.sqrt(player.location.x*player.location.x+player.location.y*player.location.y) > greatest/Math.sqrt(greatestX*greatestX+greatestY*greatestY)) {
-        if (player.size<AI.size/1.41) {
+    if (player.size / Math.sqrt(
+        player.location.x * player.location.x +
+        player.location.y * player.location.y) >
+        greatest / Math.sqrt(greatestX * greatestX + greatestY * greatestY)) {
+        if (player.size < AI.size / 1.41) {
             greatest = player.size;
             greatestX = player.location.x;
             greatestY = player.location.y;
-        } else if (player.size>AI.size*1.41) {
-            greatestX = 2*AI.location.x-player.location.x;
-            greatestY = 2*AI.location.y-player.location.y;
+        } else if (player.size > AI.size * 1.41) {
+            greatestX = 2 * AI.location.x - player.location.x;
+            greatestY = 2 * AI.location.y - player.location.y;
         }
     }
     AI.target.x = greatestX;
@@ -350,7 +363,15 @@ function AItarget(AI) {
 function spawnAI() {
     var pX = Math.floor((Math.random()) * size.width);
     var pY = Math.floor((Math.random()) * size.height);
-    var AI = {location:{x: pX, y: pY}, size:10, type: 'AI', color:randRGB(), style: 'circle', speed:50, target:{x:0, y:0}};
+    var AI = {
+        location:{x: pX, y: pY},
+        size:10,
+        type: 'AI',
+        color:randRGB(),
+        style: 'circle',
+        speed:50,
+        target:{x:0, y:0}
+    };
     AIs.push(AI);
 }
 
@@ -374,13 +395,13 @@ function findAllTargets() {
     }
 }
 
-int targetNum = 0;
+var targetNum = 0;
 function findTargets() {
     findTarget(AIs[targetNum]);
-    if (targetnum < AIs.length - 1) {
-        targetnum++;
+    if (targetNum < AIs.length - 1) {
+        targetNum++;
     } else {
-        targetnum = 0;
+        targetNum = 0;
     }
 }
 
@@ -388,7 +409,7 @@ function findTargets() {
 function intervalFunctionCalls() {
     if (!isUserDead(player)) {
         drawBackground();
-        if(!paused) {
+        if (!paused) {
             movePlayer();
             makePellets();
             moveAIs();
@@ -409,4 +430,4 @@ setSpeed(player);
 makeGamePellets();
 spawnAIs();
 findAllTargets();
-setInterval(function() {intervalFunctionCalls();}, 1000/fps);
+setInterval(function() {intervalFunctionCalls();}, 1000 / fps);
