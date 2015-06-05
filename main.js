@@ -314,7 +314,7 @@ function increaseSpeed() {
     if (player.size > 10 + speedIncCost) {
         speedMult += 0.05;
         player.size -= Math.floor(speedIncCost);
-        speedIncCost = Math.pow(speedIncCost, 1.1);
+        speedIncCost = Math.pow(speedIncCost, 1.05);
         document.getElementById('speedIncreaseCost').innerHTML =
             Math.ceil(speedIncCost);
         setSpeed(player);
@@ -405,6 +405,7 @@ function findTarget(AI) {
                 greatestX = AIs[i].location.x;
                 greatestY = AIs[i].location.y;
             } else if (AIs[i].size > AI.size * 1.41) {
+            	greatest = AIs[i].size;
                 greatestX = 2 * AI.location.x - AIs[i].location.x;
                 greatestY = 2 * AI.location.y - AIs[i].location.y;
             }
@@ -419,6 +420,7 @@ function findTarget(AI) {
             greatestX = player.location.x;
             greatestY = player.location.y;
         } else if (player.size > AI.size * 1.41) {
+        	greatest = player.size;
             greatestX = 2 * AI.location.x - player.location.x;
             greatestY = 2 * AI.location.y - player.location.y;
         }
@@ -458,6 +460,12 @@ function drawAIs() {
     }
 }
 
+function spawnNewAIs() {
+	if (AIs.length < 20) {
+		spawnAI();
+	}
+}
+
 function findAllTargets() {
     for (i in AIs) {
         findTarget(AIs[i]);
@@ -487,6 +495,7 @@ function intervalFunctionCalls() {
         }
         drawPellets();
         findTargets();
+        spawnNewAIs();
         drawAIs();
         drawUser(player);
         notify();
