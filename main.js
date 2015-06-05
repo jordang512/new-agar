@@ -74,6 +74,7 @@ function drawUser(user) {
                             user.size += AIs[i].size;
                             AIs.splice(i, 1);
                             setSpeed(user);
+                            targetNum = 0;
                         } else if (user.style == 'circle') {
                             if (Math.sqrt((AIs[i].location.y - user.location.y) * 
                                 (AIs[i].location.y - user.location.y) + 
@@ -82,7 +83,30 @@ function drawUser(user) {
                                 user.size += AIs[i].size;
                                 AIs.splice(i, 1);
                                 setSpeed(user);
+                                targetNum = 0;
                             }
+                        }
+                    }
+                }
+            }
+        }
+        if (user.size >= player.size*1.414) {
+            if (player.location.x < user.location.x + radius && player.location.x > user.location.x - radius) {
+                if (player.location.y < user.location.y + radius && player.location.y > user.location.y - radius) {
+                    if (user.style == 'square') {
+                        user.size += player.size;
+                        player.size = 0;
+                        setSpeed(user);
+                        targetNum = 0;
+                    } else if (user.style == 'circle') {
+                        if (Math.sqrt((player.location.y - user.location.y) * 
+                            (player.location.y - user.location.y) + 
+                            (player.location.x - user.location.x) * 
+                            (player.location.x - user.location.x)) < radius) {
+                            user.size += player.size;
+                            player.size = 0;
+                            setSpeed(user);
+                            targetNum = 0;
                         }
                     }
                 }
@@ -90,6 +114,7 @@ function drawUser(user) {
         }
     }
 }
+
 
 // Moves the player based on the mouse coords
 function movePlayer() {
@@ -317,8 +342,8 @@ document.addEventListener('keydown', function(event) {
 // Finds what direction an AI should go
 function findTarget(AI) {
     var greatest = 0.0;
-    var greatestX = 0;
-    var greatestY = 0;
+    var greatestX = 1;
+    var greatestY = 1;
     for (i in pellets) {
         if (1/Math.sqrt(pellets[i].location.x * 
             pellets[i].location.x + pellets[i].location.y * 
@@ -386,6 +411,7 @@ function spawnAIs() {
 function drawAIs() {
     for (i in AIs) {
         drawUser(AIs[i]);
+        setSpeed(AIs[i]);
     }
 }
 
@@ -397,11 +423,13 @@ function findAllTargets() {
 
 var targetNum = 0;
 function findTargets() {
-    findTarget(AIs[targetNum]);
-    if (targetNum < AIs.length - 1) {
-        targetNum++;
-    } else {
-        targetNum = 0;
+    if (AIs.length > 0) {
+        findTarget(AIs[targetNum]);
+        if (targetNum < AIs.length - 1) {
+            targetNum++;
+        } else {
+            targetNum = 0;
+        }
     }
 }
 
