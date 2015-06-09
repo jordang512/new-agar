@@ -272,7 +272,7 @@ function drawScore() {
     ctx.beginPath();
     ctx.fillStyle = 'gray';
     ctx.font = '22px Arial';
-    ctx.fillText('Size: ' + player.size + ' FPS: ' + currentFPS, 20, c.height - 25);
+    ctx.fillText('Size: ' + player.size, 20, c.height - 25);
 }
 
 var pButtonLoc = {x: 540, y: 540};
