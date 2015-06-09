@@ -302,6 +302,35 @@ function drawPauseSymbol() {
     ctx.stroke();
 }
 
+function drawPlaySymbol() {
+    ctx.beginPath();
+    ctx.moveTo(pButtonLoc.x - 30, pButtonLoc.y - 40);
+    ctx.lineTo(pButtonLoc.x + 30, pButtonLoc.y - 40);
+    ctx.quadraticCurveTo(pButtonLoc.x + 40, pButtonLoc.y - 40,
+        pButtonLoc.x + 40, pButtonLoc.y - 30);
+    ctx.lineTo(pButtonLoc.x + 40, pButtonLoc.y + 30);
+    ctx.quadraticCurveTo(pButtonLoc.x + 40, pButtonLoc.y + 40,
+        pButtonLoc.x + 30, pButtonLoc.y + 40);
+    ctx.lineTo(pButtonLoc.x - 30, pButtonLoc.y + 40);
+    ctx.quadraticCurveTo(pButtonLoc.x - 40, pButtonLoc.y + 40,
+        pButtonLoc.x - 40, pButtonLoc.y + 30);
+    ctx.lineTo(pButtonLoc.x - 40, pButtonLoc.y - 30);
+    ctx.quadraticCurveTo(pButtonLoc.x - 40, pButtonLoc.y - 40,
+        pButtonLoc.x - 30, pButtonLoc.y - 40);
+    ctx.fillStyle = 'gold';
+    ctx.fill();
+    ctx.fillStyle = 'silver';
+    ctx.stroke();
+    ctx.closePath();
+    ctx.beginPath();
+    ctx.moveTo(pButtonLoc.x - 25, pButtonLoc.y - 28);
+    ctx.lineTo(pButtonLoc.x + 25, pButtonLoc.y);
+    ctx.lineTo(pButtonLoc.x - 25, pButtonLoc.y + 28);
+    ctx.lineTo(pButtonLoc.x - 25, pButtonLoc.y - 28);
+    ctx.fill();
+    ctx.stroke();
+}
+
 // Checks if the player is dead
 function isUserDead(user) {
     if (user.size < 1) {
@@ -532,7 +561,11 @@ function checkClickLoc(event) {
         mouse.x <= 580 &&
         mouse.y >= 500 &&
         mouse.y <= 580) {
-        paused = false;
+        if (paused == false) {
+            paused = true;
+        } else {
+            paused = false;
+        }
     }
 }
 
@@ -555,8 +588,10 @@ function intervalFunctionCalls() {
         notify();
         drawScore();
         if (paused) {
-            drawPauseSymbol();
             currentFPS = 5;
+            drawPlaySymbol();
+        } else {
+            drawPauseSymbol();
         }
     }
     setTimeout(function() {intervalFunctionCalls();}, 1000 / currentFPS);
