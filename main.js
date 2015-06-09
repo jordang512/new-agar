@@ -242,7 +242,7 @@ var maxPellets = 500;
 // Makes a pellet every frame, maxing out at 2000
 function makePellets() {
     if (pellets.length < maxPellets) {
-        if (pCount == Math.floor(0)) {
+        if (pCount == pelletSpawn) {
             pCount = 0;
             makePellet();
         } else {
@@ -506,6 +506,12 @@ function intervalFunctionCalls() {
             drawPauseSymbol();
         }
     }
+}
+
+var pelletSpawn = 2;
+function setPelletsPerSecond(a) {
+    pelletSpawn = Math.floor(60/a);
+    document.getElementById('pelletsPerSecond').innerHTML = a;
 }
 
 setSpeed(player);
