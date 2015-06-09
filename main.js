@@ -495,10 +495,10 @@ function intervalFunctionCalls() {
             movePlayer();
             makePellets();
             moveAIs();
+            findTargets();
+            spawnNewAIs();
         }
         drawPellets();
-        findTargets();
-        spawnNewAIs();
         drawAIs();
         drawUser(player);
         notify();
@@ -523,6 +523,24 @@ function setMaxPellets(a) {
 function setTotalAIs(a) {
     maxAIs = Math.floor(a);
     document.getElementById('totalAIs').innerHTML = a;
+}
+
+var mouse;
+function getCursorPosition(event) {
+    var rect = c.getBoundingClientRect();
+    var x = event.clientX - rect.left;
+    var y = event.clientY - rect.top;
+    mouse = {x: x, y: y};
+}
+
+function checkClickLoc(event) {
+    getCursorPosition(event);
+    if (mouse.x >= 500 &&
+        mouse.x <= 580 &&
+        mouse.y >= 500 &&
+        mouse.y <= 580) {
+        paused = false;
+    }
 }
 
 setSpeed(player);
