@@ -23,6 +23,7 @@ var player = {
     style: 'circle',
     speedMult: 1
 };
+var sizeMult = 1;
 
 function drawBackground() {
     ctx.beginPath();
@@ -42,20 +43,20 @@ function drawUser(user) {
     ctx.fillStyle = user.color;
     if (user.style == 'circle') {
         radius = Math.sqrt(user.size / Math.PI) * 10;
-        ctx.moveTo(user.location.x - player.location.x + c.width / 2,
-            user.location.y - player.location.y + c.height / 2);
-        ctx.arc(user.location.x - player.location.x + c.width / 2,
-            user.location.y - player.location.y + c.height / 2,
-            radius, 0, Math.PI * 2);
+        ctx.moveTo((user.location.x - player.location.x) * sizeMult + c.width / 2,
+            (user.location.y - player.location.y) * sizeMult + c.height / 2);
+        ctx.arc((user.location.x - player.location.x) * sizeMult + c.width / 2,
+            (user.location.y - player.location.y) * sizeMult + c.height / 2,
+            radius*sizeMult, 0, Math.PI * 2);
         ctx.fill();
         ctx.closePath();
     } else if (user.style == 'square') {
         radius = Math.sqrt(user.size) * 10 / 2;
-        ctx.moveTo(user.location.x - player.location.x + c.width / 2 - radius,
-            user.location.y - player.location.y + c.height / 2 - radius);
-        ctx.rect(user.location.x - player.location.x + c.width / 2 - radius,
-            user.location.y - player.location.y + c.height / 2 - radius,
-            radius * 2, radius * 2);
+        ctx.moveTo((user.location.x - player.location.x) * sizeMult + c.width / 2 - radius * sizeMult,
+            (user.location.y - player.location.y) * sizeMult + c.height / 2 - radius * sizeMult);
+        ctx.rect((user.location.x - player.location.x) * sizeMult + c.width / 2 - radius * sizeMult,
+            (user.location.y - player.location.y) * sizeMult + c.height / 2 - radius * sizeMult,
+            radius * 2 * sizeMult, radius * 2 * sizeMult);
         ctx.fill();
         ctx.closePath();
     }
@@ -406,7 +407,7 @@ function findTarget(AI) {
                 greatestX = AIs[i].location.x;
                 greatestY = AIs[i].location.y;
             } else if (AIs[i].size > AI.size * 1.41) {
-            	greatest = AIs[i].size;
+                greatest = AIs[i].size;
                 greatestX = 2 * AI.location.x - AIs[i].location.x;
                 greatestY = 2 * AI.location.y - AIs[i].location.y;
             }
@@ -421,7 +422,7 @@ function findTarget(AI) {
             greatestX = player.location.x;
             greatestY = player.location.y;
         } else if (player.size > AI.size * 1.41) {
-        	greatest = player.size;
+            greatest = player.size;
             greatestX = 2 * AI.location.x - player.location.x;
             greatestY = 2 * AI.location.y - player.location.y;
         }
@@ -464,9 +465,9 @@ function drawAIs() {
 }
 
 function spawnNewAIs() {
-	if (AIs.length < 20) {
-		spawnAI();
-	}
+    if (AIs.length < 20) {
+        spawnAI();
+    }
 }
 
 function findAllTargets() {
@@ -487,11 +488,20 @@ function findTargets() {
     }
 }
 
+function setSizeMult() {
+    if (player.size < 100) {
+        sizeMult = 1;
+    } else {
+        sizeMult = 1 / Math.sqrt(player.size / 100);
+    }
+}
+
 // The function calls that happen every frame
 function intervalFunctionCalls() {
     if (!isUserDead(player)) {
         drawBackground();
         if (!paused) {
+            setSizeMult();
             movePlayer();
             makePellets();
             moveAIs();
