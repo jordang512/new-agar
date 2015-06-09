@@ -76,7 +76,11 @@
 
                 <p style="margin-left: auto; margin-right: auto; text-align:center">Number of Opponents: <span id="totalAIs">20</span></p>
                 <p style="width: 200px; margin-left: auto; margin-right: auto"><span style="display:block; float:left;">0</span><span style="display: block; float: right;">100</span>
-                <input style="display: block; margin-left: auto; margin-right: auto" type="range" min="0" max="100" name="maxPellets" value="20" step="5" onchange="setTotalAIs(value)"/></p>
+                <input style="display: block; margin-left: auto; margin-right: auto" type="range" min="0" max="100" name="numbaOfAIs" value="20" step="5" onchange="setTotalAIs(value)"/></p>
+
+                <p style="margin-left: auto; margin-right: auto; text-align:center">Game Speed: <span id="fps">1</span>x</p>
+                <p style="width: 200px; margin-left: auto; margin-right: auto"><span style="display:block; float:left;">6x</span><span style="display: block; float: right;">0.5x</span>
+                <input style="display: block; margin-left: auto; margin-right: auto" type="range" min="10" max="120" name="targetFPS" value="60" step="10" onchange="setTargetFPS(value)"/></p>
             </div>
     	</div>
     </div>
