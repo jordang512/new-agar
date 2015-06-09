@@ -67,19 +67,19 @@
                 <p style="margin-top: 0; margin-bottom: 0; padding-top:4px; font-size: 36px; font-family: cambria; color: white; text-align: center">Settings</p>
 
                 <p style="margin-left: auto; margin-right: auto; text-align:center">Pellets/s: <span id="pelletsPerSecond">30</span></p>
-                <p style="width: 200px; margin-left: auto; margin-right: auto"><span style="display:block; float:left;">0</span><span style="display: block; float: right;">60</span>
+                <p style="width: 200px; margin-left: auto; margin-right: auto; margin-top: -15px;"><span style="display:block; float:left;">0</span><span style="display: block; float: right;">60</span>
                 <input style="display: block; margin-left: auto; margin-right: auto" type="range" min="0" max="60" name="pelletSpawnRate" value="30" step="5" onchange="setPelletsPerSecond(value)"/></p>
 
                 <p style="margin-left: auto; margin-right: auto; text-align:center">Max Pellets: <span id="maxPellets">2000</span></p>
-                <p style="width: 220px; margin-left: auto; margin-right: auto"><span style="display:block; float:left;">500</span><span style="display: block; float: right;">10000</span>
+                <p style="width: 220px; margin-left: auto; margin-right: auto; margin-top: -15px;"><span style="display:block; float:left;">500</span><span style="display: block; float: right;">10000</span>
                 <input style="display: block; margin-left: auto; margin-right: auto" type="range" min="500" max="10000" name="maxPellets" value="2000" step="500" onchange="setMaxPellets(value)"/></p>
 
                 <p style="margin-left: auto; margin-right: auto; text-align:center">Number of Opponents: <span id="totalAIs">20</span></p>
-                <p style="width: 200px; margin-left: auto; margin-right: auto"><span style="display:block; float:left;">0</span><span style="display: block; float: right;">100</span>
+                <p style="width: 200px; margin-left: auto; margin-right: auto; margin-top: -15px;"><span style="display:block; float:left;">0</span><span style="display: block; float: right;">100</span>
                 <input style="display: block; margin-left: auto; margin-right: auto" type="range" min="0" max="100" name="numbaOfAIs" value="20" step="5" onchange="setTotalAIs(value)"/></p>
 
-                <p style="margin-left: auto; margin-right: auto; text-align:center">Game Speed: <span id="fps">1</span>x</p>
-                <p style="width: 200px; margin-left: auto; margin-right: auto"><span style="display:block; float:left;">6x</span><span style="display: block; float: right;">0.5x</span>
+                <p style="margin-left: auto; margin-right: auto; text-align:center">FPS: <span id="fps">60</span></p>
+                <p style="width: 200px; margin-left: auto; margin-right: auto; margin-top: -15px;"><span style="display:block; float:left;">10</span><span style="display: block; float: right;">120</span>
                 <input style="display: block; margin-left: auto; margin-right: auto" type="range" min="10" max="120" name="targetFPS" value="60" step="10" onchange="setTargetFPS(value)"/></p>
             </div>
     	</div>

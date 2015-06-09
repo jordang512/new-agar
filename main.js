@@ -497,31 +497,6 @@ function setSizeMult() {
     }
 }
 
-// The function calls that happen every frame
-function intervalFunctionCalls() {
-    if (!isUserDead(player)) {
-        drawBackground();
-        if (!paused) {
-            currentFPS = targetFPS;
-            setSizeMult();
-            movePlayer();
-            makePellets();
-            moveAIs();
-            findTargets();
-            spawnNewAIs();
-        }
-        drawPellets();
-        drawAIs();
-        drawUser(player);
-        notify();
-        drawScore();
-        if (paused) {
-            drawPauseSymbol();
-            currentFPS = 1;
-        }
-    }
-}
-
 var pelletSpawn = 2;
 function setPelletsPerSecond(a) {
     pelletSpawn = Math.floor(60/a);
@@ -540,7 +515,7 @@ function setTotalAIs(a) {
 
 function setTargetFPS(a) {
     targetFPS = a;
-    document.getElementById('fps').innerHTML = Math.floor((60/a) * 10)/10;
+    document.getElementById('fps').innerHTML = a;
 }
 
 var mouse;
@@ -561,8 +536,34 @@ function checkClickLoc(event) {
     }
 }
 
+// The function calls that happen every frame
+function intervalFunctionCalls() {
+    if (!isUserDead(player)) {
+        drawBackground();
+        if (!paused) {
+            currentFPS = targetFPS;
+            setSizeMult();
+            movePlayer();
+            makePellets();
+            moveAIs();
+            findTargets();
+            spawnNewAIs();
+        }
+        drawPellets();
+        drawAIs();
+        drawUser(player);
+        notify();
+        drawScore();
+        if (paused) {
+            drawPauseSymbol();
+            currentFPS = 5;
+        }
+    }
+    setTimeout(function() {intervalFunctionCalls();}, 1000 / currentFPS);
+}
+
 setSpeed(player);
 makeGamePellets();
 spawnAIs();
 findAllTargets();
-setInterval(function() {intervalFunctionCalls();}, 1000 / currentFPS);
+intervalFunctionCalls();
