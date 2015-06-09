@@ -447,9 +447,10 @@ function spawnAI() {
     AIs.push(AI);
 }
 
+var maxAIs = 20;
 // Spawns starting AIs
 function spawnAIs() {
-    for (i = 0; i < 20; i++) {
+    for (i = 0; i < maxAIs; i++) {
         spawnAI();
     }
 }
@@ -512,6 +513,16 @@ var pelletSpawn = 2;
 function setPelletsPerSecond(a) {
     pelletSpawn = Math.floor(60/a);
     document.getElementById('pelletsPerSecond').innerHTML = a;
+}
+
+function setMaxPellets(a) {
+    maxPellets = Math.floor(a);
+    document.getElementById('maxPellets').innerHTML = a;
+}
+
+function setTotalAIs(a) {
+    maxAIs = Math.floor(a);
+    document.getElementById('totalAIs').innerHTML = a;
 }
 
 setSpeed(player);
