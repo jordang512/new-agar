@@ -495,7 +495,7 @@ function drawAIs() {
 }
 
 function spawnNewAIs() {
-    if (AIs.length < 20) {
+    if (AIs.length < maxAIs) {
         spawnAI();
     }
 }
