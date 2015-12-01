@@ -1,8 +1,7 @@
 var spawnrate = 5;
 var numberOfAIs = 15;
 var alive = true;
-var currentFPS = 60;
-var targetFPS = 60;
+var FPS = 60;
 var MouseX = 0;
 var MouseY = 0;
 var pCount = 0;
@@ -166,14 +165,14 @@ function movePlayer() {
     if (!(MouseX > c.width / 2 - 10 && MouseX < c.width / 2 + 10 &&
         MouseY > c.height / 2 && MouseY < c.height / 2 + 20)) {
         if (player.location.x > 0 && MouseX < c.width / 2) {
-            player.location.x -= player.speed / currentFPS * distX;
+            player.location.x -= player.speed / FPS * distX;
         } else if (player.location.x < size.height && MouseX > c.width / 2) {
-            player.location.x += player.speed / currentFPS * distX;
+            player.location.x += player.speed / FPS * distX;
         }
         if (player.location.y > 0 && MouseY < c.width / 2) {
-            player.location.y -= player.speed / currentFPS * distY;
+            player.location.y -= player.speed / FPS * distY;
         } else if (player.location.y < size.width && MouseY > c.width / 2) {
-            player.location.y += player.speed / currentFPS * distY;
+            player.location.y += player.speed / FPS * distY;
         }
     }
 }
@@ -190,14 +189,14 @@ function moveAI(AI) {
     radius = Math.sqrt(AI.size / Math.PI) * 10;
     // Moves AI towards target
     if (AI.location.x > 0 && AI.target.x < c.width / 2) {
-        AI.location.x -= AI.speed / currentFPS * distX;
+        AI.location.x -= AI.speed / FPS * distX;
     } else if (AI.location.x < size.height && AI.target.x > c.width / 2) {
-        AI.location.x += AI.speed / currentFPS * distX;
+        AI.location.x += AI.speed / FPS * distX;
     }
     if (AI.location.y > 0 && AI.target.y < c.width / 2) {
-        AI.location.y -= AI.speed / currentFPS * distY;
+        AI.location.y -= AI.speed / FPS * distY;
     } else if (AI.location.y < size.width && AI.target.y > c.width / 2) {
-        AI.location.y += AI.speed / currentFPS * distY;
+        AI.location.y += AI.speed / FPS * distY;
     }
 }
 
@@ -355,7 +354,7 @@ function increaseSpeed() {
     } else {
         addNotification(
             'You need to have at least 10 mass left after the purchase!',
-            targetFPS * 5, 20, 25);
+            FPS * 5, 20, 25);
     }
 }
 
@@ -544,11 +543,6 @@ function setTotalAIs(a) {
     document.getElementById('totalAIs').innerHTML = a;
 }
 
-function setTargetFPS(a) {
-    targetFPS = a;
-    document.getElementById('fps').innerHTML = a;
-}
-
 var mouse;
 function getCursorPosition(event) {
     var rect = c.getBoundingClientRect();
@@ -576,7 +570,7 @@ function gameLoop() {
         if (!isUserDead(player)) {
         drawBackground();
         if (!paused) {
-            currentFPS = targetFPS;
+            FPS = 60;
             setSizeMult();
             movePlayer();
             makePellets();
@@ -590,7 +584,7 @@ function gameLoop() {
         notify();
         drawScore();
         if (paused) {
-            currentFPS = 5;
+            FPS = 5;
             drawPlaySymbol();
         } else {
             drawPauseSymbol();
@@ -607,7 +601,7 @@ function intervalFunctionCalls() {
     var start = now();
     gameLoop();
     var offset = now() - start;
-    setTimeout(function() {intervalFunctionCalls();}, (1000 / currentFPS) - offset);
+    setTimeout(function() {intervalFunctionCalls();}, (1000 / FPS) - offset);
     if (offset > 12) {
         console.log('not hitting fps');
     }
