@@ -207,7 +207,7 @@ function moveAIs() {
 
 // Uses JQuery and html to find mouse coords
 function setMousePosition(e) {
-    MouseX = e.clientX - ($(window).width() / 2 - c.width / 2) + 160;
+    MouseX = e.clientX - (window.innerWidth / 2 - c.width / 2) + 160;
     MouseY = e.clientY;
 }
 
@@ -605,7 +605,7 @@ function intervalFunctionCalls() {
     var start = now();
     gameLoop();
     var offset = now() - start;
-    setTimeout(function() {intervalFunctionCalls();}, (1000 / currentFPS) - offset));
+    setTimeout(function() {intervalFunctionCalls();}, (1000 / currentFPS) - offset);
     if (offset > 12) {
         console.log('not hitting fps');
     }
