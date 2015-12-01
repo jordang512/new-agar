@@ -1,33 +1,180 @@
-#nonClickedButton {
+body {
+	text-align: center;
+}
+
+ul {
+    list-style-type: none;
+    display: block;
+    padding: 0;
+    margin: 0;
+}
+
+ul li {
+	display: inline-block;
+	padding: 8px 4px 4px 4px;
+}
+
+.container {
+	display:block;
+	margin-left:auto;
+	margin-right:auto;
+	width: 920px;
+}
+
+.container-2 {
+	width: 300px;
+	height: 600px;
+	background-color: #8A5FA1;
+	float: right;
 	border-radius: 5px;
+	overflow-y: scroll;
+}
+
+.small {
+	height: 50px;
+	width: 50px;
+	padding: 15px;
+}
+
+.large {
+	width: 280px;
+	height: 80px;
+	margin-top: 10px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.white-shape {
+	margin-left: auto;
+	margin-right: auto;
+	background-color: white;
+	width: 50px;
+	height: 50px;
+}
+
+.circle {
+	border-radius: 25px;
+}
+
+.header {
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-top:4px;
+	font-size: 36px;
+	font-family: cambria;
+	color: white;
+}
+
+.slider-numbers {
+	width: 220px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: -15px;
+}
+
+.220 {
+	width: 220px;
+}
+
+.outline {
+	border-radius: 5px;
+	border: 1px solid #283290;
+	width: 280px;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 10px;
-	text-align: center;
-	color: white;
-	font-family: cambria;
-	font-size: 36px
 }
 
-#button {
-	background-color: #283290;
-	border-radius: 5px;
+.small-text {
+	font-size: 15px;
+	margin-top: 5px;
+}
+
+.large-text {
+	margin-top: 0px;
+	margin-bottom:0px;
+	padding-top:4px;
+}
+
+.input-style {
 	margin-left: auto;
 	margin-right: auto;
-	text-align: center;
+	display: block;
+}
+
+.float-left {
+	float: left;
+}
+
+.float-right {
+	float: right;
+}
+
+.red {background-color: red;}
+.orange {background-color: orange;}
+.yellow {background-color: yellow;}
+.green {background-color: green;}
+.blue {background-color: blue;}
+.indigo {background-color: indigo;}
+.purple {background-color: purple;}
+.violet {background-color: violet;}
+.sienna {background-color: sienna;}
+.black {background-color: black;}
+
+.button {
+	background-color: #283290;
+	border-radius: 5px;
 	color: white;
 	font-family: cambria;
 	font-size: 36px
 }
-#button:hover{
+.button:hover{
     background-color: #C01F45;
 }
 
-#button:current{
+.button:current{
 	background-color: #C01F45;
 }
 
-#colorPalette {
+.colorPalette {
 	height: 52px;
 	display: table-cell;
+}
+
+.table {
+	display: table;
+	width: 260px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.table-top {
+	margin-top: 5px;
+}
+
+.table-bottom {
+	margin-bottom: 10px;
+}
+
+.desc-line-1 {
+	font-family: cambria;
+	font-size: 20px;
+	color: gray;
+	margin-top: 15px;
+}
+
+.desc-line-2 {
+	font-family: cambria;
+	font-size: 10px;
+	color: gray;
+	margin-top: -20px;
+}
+
+.last-thingy {
+	margin-bottom: 10px;
+}
+
+.canvas {
+	float: left;
+	border-radius: 5px;
 }
