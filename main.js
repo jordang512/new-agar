@@ -207,7 +207,7 @@ function moveAIs() {
 
 // Uses JQuery and html to find mouse coords
 function setMousePosition(e) {
-    MouseX = e.clientX - ($(window).width() / 2 - c.width / 2) + 160;
+    MouseX = e.clientX - (window.innerWidth / 2 - c.width / 2) + 160;
     MouseY = e.clientY;
 }
 
