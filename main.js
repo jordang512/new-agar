@@ -604,9 +604,11 @@ function now() {
 function intervalFunctionCalls() {
     var start = now();
     gameLoop();
-    var end = now();
-    setTimeout(function() {intervalFunctionCalls();}, 1000 / (currentFPS + start - end));
-    console.log(end - start);
+    var offset = now() - start;
+    setTimeout(function() {intervalFunctionCalls();}, (1000 / currentFPS) - offset));
+    if (offset > 12) {
+        console.log('not hitting fps');
+    }
 }
 
 setSpeed(player);
