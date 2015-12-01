@@ -489,8 +489,10 @@ function spawnAIs() {
 // Draws AIs
 function drawAIs() {
     for (i in AIs) {
-        drawUser(AIs[i]);
-        setSpeed(AIs[i]);
+        if (AIs[i] != null) {
+            drawUser(AIs[i]);
+            setSpeed(AIs[i]);
+        }
     }
 }
 
@@ -616,4 +618,3 @@ makeGamePellets();
 spawnAIs();
 findAllTargets();
 intervalFunctionCalls();
-
