@@ -35,7 +35,9 @@ function drawBackground() {
 
 // Sets the speed of given user
 function setSpeed(user) {
-    user.speed = Math.pow(Math.sqrt(player.size + 190), -1) * 4000 * user.speedMult;
+    if (user != null) {
+        user.speed = Math.pow(Math.sqrt(player.size + 190), -1) * 4000 * user.speedMult;
+    }
 }
 
 // Draws given user on the canvas
@@ -489,10 +491,8 @@ function spawnAIs() {
 // Draws AIs
 function drawAIs() {
     for (i in AIs) {
-        if (AIs[i] != null) {
-            drawUser(AIs[i]);
-            setSpeed(AIs[i]);
-        }
+        drawUser(AIs[i]);
+        setSpeed(AIs[i]);
     }
 }
 
