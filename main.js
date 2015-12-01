@@ -570,8 +570,8 @@ function checkClickLoc(event) {
 }
 
 // The function calls that happen every frame
-function intervalFunctionCalls() {
-    if (!isUserDead(player)) {
+function gameLoop() {
+        if (!isUserDead(player)) {
         drawBackground();
         if (!paused) {
             currentFPS = targetFPS;
@@ -594,7 +594,19 @@ function intervalFunctionCalls() {
             drawPauseSymbol();
         }
     }
-    setTimeout(function() {intervalFunctionCalls();}, 1000 / currentFPS);
+}
+
+var supportsPerformance = ('performance' in window) && ('now' in window.performance);
+function now() {
+    return (supportsPerformance ? performance.now() : Date.now());
+}
+
+function intervalFunctionCalls() {
+    var start = now();
+    gameLoop();
+    var end = now();
+    setTimeout(function() {intervalFunctionCalls();}, 1000 / (currentFPS + start - end));
+    console.log(end - start);
 }
 
 setSpeed(player);
