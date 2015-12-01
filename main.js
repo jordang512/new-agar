@@ -615,4 +615,6 @@ setSpeed(player);
 makeGamePellets();
 spawnAIs();
 findAllTargets();
-intervalFunctionCalls();
+while (true) {
+    intervalFunctionCalls();
+}
